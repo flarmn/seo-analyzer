@@ -54,7 +54,7 @@ $robotFSize = explode(':', $robotsSize);
 
 //print_r($robotFSize);
 
-echo 'File size: ' . $robotFSize[1] . " Bytes";
+echo 'File size: ' . $robotFSize[1] . " 	Bytes";
 
 ?>
 
