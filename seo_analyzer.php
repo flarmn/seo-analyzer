@@ -7,7 +7,7 @@
 
 
 <?php
-
+$checkedAddres = $_POST["address"];
 // ===============
 /*
 $filename = '/path/to/foo.txt';
@@ -21,19 +21,18 @@ if (file_exists($filename)) {
 // ==================
 
 
-$robotspath= file_get_contents('http://127.0.0.1/seo_analyzer/robots1.txt');
-echo $homepage;
+$robotspath= file_get_contents($checkedAddres . '/robots.txt');
+echo $robotspath;
 
-if ($homepage == false){
-echo 'chu-chu';
+if ($robotspath == false){
+echo 'No robots file';
 } else {
 	echo 'Waw!';
 }
 
 
 
-$some = $_POST["address"];
-echo $some;
+
 
 
 ?>
