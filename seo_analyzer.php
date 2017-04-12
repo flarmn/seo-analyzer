@@ -48,6 +48,17 @@ $robotsExistStatus = "Файл robots.txt отсутствует";
 // Getting server answer
 $serverAnswer=(get_headers($checkedAddress)[0]);
 
+if(substr_count($serverAnswer, "200")>0){
+$serverAnswerCountStatus = "Файл robots.txt отдаёт код ответа сервера: " . $serverAnswer;
+$serverAnswerRecomendation = "Доработки не требуются";
+$serverAnswerStatus = '<p style = "display:inline-block; height:100%; width:100%; background:green; color:white;">OK</p>';
+} else {
+$serverAnswerCountStatus = "При обращении к файлу robots.txt сервер возвращает код ответа: " . $serverAnswer;
+$serverAnswerRecomendation = "Программист: Файл robots.txt должны отдавать код ответа 200, иначе файл не будет обрабатываться. Необходимо настроить сайт таким образом, чтобы при обращении к файлу robots.txt сервер возвращает код ответа 200";
+$serverAnswerStatus = '<p style = "display:inline-block; background:red; color:white;">Ошибка</p>';
+}
+
+
 echo '<br/>' . 'Server answer: ' . $serverAnswer ;
 
 
@@ -77,11 +88,11 @@ $robotFSizeStatus = '<p style = "display:inline-block; height:100%; width:100%; 
 
 
 // Checking if Host appear in robots file
-$searchTerm  = "Host";
+$searchHostTerm  = "Host";
 $robotssearch = file_get_contents($checkedAddress . '/robots.txt');
-$termsCount = substr_count($robotssearch, $searchTerm);
+$termsCount = substr_count($robotssearch, $searchHostTerm);
 
-if (substr_count($robotssearch, $searchTerm)>0){
+if (substr_count($robotssearch, $searchHostTerm)>0){
     echo "<br/>Найден! Искомое слово встречаеться " . $termsCount . ' раз';
 
     $hostExistStatus = "Директива Host указана";
@@ -94,6 +105,21 @@ else{
 	$hostExistRecomendation = "Программист: Для того, чтобы поисковые системы знали, какая версия сайта является основных зеркалом, необходимо прописать адрес основного зеркала в директиве Host. В данный момент это не прописано. Необходимо добавить в файл robots.txt директиву Host. Директива Host задётся в файле 1 раз, после всех правил.";
 $hostStatus = '<p style = "display:inline-block; height:100%; width:100%; background:red; color:white;">Oшибка</p>';
 } 
+
+
+$searchSiteMapTerm = "Sitemap";
+if (substr_count($robotssearch, $searchHostTerm)>0){
+    $siteMapExistStatus = "Директива Sitemap указана";
+	$siteMapExistRecomendation = "Доработки не требуются";
+	$siteMapStatus = '<p style = "display:inline-block; height:100%; width:100%; background:green; color:white;">Ok</p>';
+}
+else{
+    $siteMapExistStatus = "В файле robots.txt не указана директива Sitemap";
+	$siteMapExistRecomendation = "Программист: Добавить в файл robots.txt директиву Sitemap";
+$siteMapStatus = '<p style = "display:inline-block; height:100%; width:100%; background:red; color:white;">Oшибка</p>';
+}
+
+
 
 // Checking if Host appear more then once in robots files, and how much times
 
@@ -203,6 +229,25 @@ $hostCountStatus = '<p style = "display:inline-block; height:100%; width:100%; b
 	№
 	</th>
 	<th>
+	Проверка указания директивы Sitemap
+	</th>
+	<th>
+	<?php echo $siteMapStatus; ?>
+	</th>
+	<th>
+		<?php echo 'Состояние: ' . $siteMapExistStatus . "<br/>"; ?>
+	<hr>
+	<?php echo 'Рекомендации: ' . $siteMapExistRecomendation . "<br/>"; ?>
+	</th>
+</tr>
+
+
+
+<tr>
+	<th>
+	№
+	</th>
+	<th>
 	Проверка размера файла robots.txt
 	</th>
 	<th>
@@ -216,6 +261,8 @@ $hostCountStatus = '<p style = "display:inline-block; height:100%; width:100%; b
 </tr>
 
 
+
+
 <tr>
 	<th>
 	№
@@ -224,10 +271,12 @@ $hostCountStatus = '<p style = "display:inline-block; height:100%; width:100%; b
 	Проверка кода ответа сервера для файла robots.txt
 	</th>
 	<th>
-	Статус
+	<?php echo $serverAnswerStatus; ?>
 	</th>
 	<th>
-	Текущее состояние
+		<?php echo 'Состояние: ' . $serverAnswerCountStatus . "<br/>"; ?>
+	<hr>
+	<?php echo 'Рекомендации: ' . $serverAnswerRecomendation . "<br/>"; ?>
 	</th>
 </tr>
 
