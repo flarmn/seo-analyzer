@@ -15,16 +15,11 @@
 <body>
 
 <div class = "container">
-
-<div class = "row">
-<h2 class = "text-center">Введите в поле адресс сайта, который нужно проверить</h2>
-<div class = "col-md-12 text-center ">
-
-<form method = "post" >
+<div class = "col-md-6">
+<form method = "post" style = "float:right;">
 <input type = "textfield" name = "address" placeholder="Input your web-site address">
 <input type = "submit" value = "Check">
 </form>
-</div>
 </div>
 
 
@@ -36,13 +31,13 @@ $robotspath = fopen($checkedAddress . '/robots.txt', 'r');
 
 // Checking if file exist at place
 if ($robotspath == false){
-//echo 'No robots file';
+echo 'No robots file';
 $robotsExistStatus = "Файл robots.txt отсутствует";
 	$robotsExistRecomendation = "Программист: Создать файл robots.txt и разместить его на сайте.";
 	$robotsStatus = '<p style = "display:inline-block; background:red; color:white;">Ошибка</p>';
 
 } else {
-	//echo 'Robots file exist. All ok!';
+	echo 'Robots file exist. All ok!';
 	$robotsExistStatus = "Файл robots.txt присутствует";
 	$robotsExistRecomendation = "Доработки не требуются";
 	$robotsStatus = '<p style = "display:inline-block; height:100%; width:100%; background:green; color:white;">Ok</p>';
@@ -63,7 +58,7 @@ $serverAnswerStatus = '<p style = "display:inline-block; background:red; color:w
 }
 
 
-//echo '<br/>' . 'Server answer: ' . $serverAnswer ;
+echo '<br/>' . 'Server answer: ' . $serverAnswer ;
 
 
 
@@ -74,7 +69,7 @@ for ($i = 0; $i < count($remoteFileMeta); $i++){
 
 if(substr_count($remoteFileMeta[$i], 'Content-Length')>0){
 $robotFSize = explode(':', $remoteFileMeta[$i])[1];
-//echo '<br/> File size: ' . $robotFSize . ' Bytes';
+echo '<br/> File size: ' . $robotFSize . ' Bytes';
 }//if
 
 }//for 
@@ -97,14 +92,14 @@ $robotssearch = file_get_contents($checkedAddress . '/robots.txt');
 $termsCount = substr_count($robotssearch, $searchHostTerm);
 
 if (substr_count($robotssearch, $searchHostTerm)>0){
-    //echo "<br/>Найден! Искомое слово встречаеться " . $termsCount . ' раз';
+    echo "<br/>Найден! Искомое слово встречаеться " . $termsCount . ' раз';
 
     $hostExistStatus = "Директива Host указана";
 	$hostExistRecomendation = "Доработки не требуются";
 	$hostStatus = '<p style = "display:inline-block; height:100%; width:100%; background:green; color:white;">Ok</p>';
 }
 else{
-    //echo "<br/>Не найден!";
+    echo "<br/>Не найден!";
     $hostExistStatus = "В файле robots.txt не указана директива Host";
 	$hostExistRecomendation = "Программист: Для того, чтобы поисковые системы знали, какая версия сайта является основных зеркалом, необходимо прописать адрес основного зеркала в директиве Host. В данный момент это не прописано. Необходимо добавить в файл robots.txt директиву Host. Директива Host задётся в файле 1 раз, после всех правил.";
 $hostStatus = '<p style = "display:inline-block; height:100%; width:100%; background:red; color:white;">Oшибка</p>';
