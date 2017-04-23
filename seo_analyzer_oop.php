@@ -27,32 +27,20 @@
 class seo_tester{
 
 
-	function seo_prober(){
-echo 'lala';
+
+public	function seo_prober(){
 $checkedAddress = $_POST["address"];
-
-
-$robotspath = fopen($checkedAddress . '/robots.txt', 'r');
-
-// Checking if file exist at place
-if ($robotspath == false){
-echo 'No robots file';
-$robotsExistStatus = "Файл robots.txt отсутствует";
-	$robotsExistRecomendation = "Программист: Создать файл robots.txt и разместить его на сайте.";
-	$robotsStatus = '<p style = "display:inline-block; background:red; color:white;">Ошибка</p>';
-
-} else {
-	echo 'Robots file exist. All ok!';
-	$robotsExistStatus = "Файл robots.txt присутствует";
-	$robotsExistRecomendation = "Доработки не требуются";
-	$robotsStatus = '<p style = "display:inline-block; height:100%; width:100%; background:green; color:white;">Ok</p>';
+//$robotspath = fopen($checkedAddress . '/robots.txt', 'r');
+echo 'lala';
+//echo $checkedAddress;
+return $checkedAddress;
 
 }
-	}
 
 function seo_analyzer(){
-echo seo_prober()->checkedAddress;
+//echo seo_prober()->$checkedAddress;
 echo 'cheese';
+echo $checkedAddress;
 }
 
 function seo_reporter(){
