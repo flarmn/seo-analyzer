@@ -28,28 +28,28 @@
 
 class seo_tester{
 
-public $koko = 'erty';
+
 
 
 public	function seo_prober(){
-//$checkedAddress = $_POST["address"];
-//$robotspath = fopen($checkedAddress . '/robots.txt', 'r');
-echo 'lala';
-//echo $checkedAddress;
 
-$this->checkedAddress = $_POST["address"];
 }
 
-function seo_analyzer(){
-	//$checkedAddress = $_POST["address"];
-//echo 'cheese';
-echo $this->checkedAddress;
-//echo $_POST["address"];
-}
+
+
+
+
+
 
 function seo_reporter(){
 
 }
+
+
+
+
+
+
 
 function seo_error_messages(){
 
@@ -60,26 +60,12 @@ function seo_error_messages(){
 
 
 
-$test = new seo_tester();
-$test->seo_prober();
-$test->seo_analyzer();
-//echo $test->koko;
-//echo $test->checkedAddress;
-
-
-class testov{
-	function test1($test){
-		echo 'kryaKRRRYA';
-		echo $test->checkedAddress;
-	}
-}
 
 
 
 
-$fafa = new testov($test);
 
-$fafa->test1($test);
+
 
 //END 
 ?>
