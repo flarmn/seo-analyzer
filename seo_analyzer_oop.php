@@ -24,26 +24,46 @@
 
 <?php
 
-//$checkedAddress = $_POST["address"];
-
 class seo_tester{
 
-public $checkedAddress = 'http://fairodis-jewelry.fairiesgifts.net/';
+
+function seo_tester_init(){
+$this->checkedAddress = $_POST["address"];
+//echo $this->checkedAddress = $_POST["address"];
+
+//tests run
+$this->if_robots_exist();
+$this->server_answer();
+}
 
 
-function check_robots_file(){
+
+
+function if_robots_exist(){
 $this->robotspath = fopen($this->checkedAddress . '/robots.txt', 'r');
-
 // Checking if file exist at place
 if ($this->robotspath == false){
 echo 'No robots file';
 } else {
 	echo 'Robots file exist. All ok!';
 }//else
-
-
 }//func
 
+
+function server_answer(){
+	// Getting server answer
+$this->serverAnswer=(get_headers($this->checkedAddress)[0]);
+
+if(substr_count($this->serverAnswer, "200")>0){
+echo "Файл robots.txt отдаёт код ответа сервера: " . $this->serverAnswer;
+
+} else {
+echo "При обращении к файлу robots.txt сервер возвращает код ответа: " . $this->serverAnswer;
+
+}
+
+echo '<br/>' . 'Server answer: ' . $this->serverAnswer ;
+}//func
 
 
 
@@ -71,7 +91,7 @@ function seo_error_messages(){
 
 $seotester = new seo_tester();
 
-$seotester->check_robots_file();
+$seotester->seo_tester_init();
 
 
 
