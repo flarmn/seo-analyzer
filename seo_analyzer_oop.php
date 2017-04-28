@@ -34,6 +34,7 @@ $this->checkedAddress = $_POST["address"];
 //tests run
 $this->if_robots_exist();
 $this->server_answer();
+$this->get_robots_size();
 }
 
 
@@ -65,6 +66,28 @@ echo "При обращении к файлу robots.txt сервер возвр
 echo '<br/>' . 'Server answer: ' . $this->serverAnswer ;
 }//func
 
+
+
+function get_robots_size(){
+// GETTING REMOTE FILE SIZE FROM REMOTE file METADATA
+
+$this->remoteFileMeta =  (stream_get_meta_data($this->robotspath)['wrapper_data']);
+
+for ($i = 0; $i < count($this->remoteFileMeta); $i++){
+
+if(substr_count($this->remoteFileMeta[$i], 'Content-Length')>0){
+$this->robotFSize = explode(':', $this->remoteFileMeta[$i])[1];
+echo '<br/> File size: ' . $this->robotFSize . ' Bytes';
+}//if
+
+}//for 
+
+if ($this->robotFSize > 32000){
+  $this->robotFSizeCountStatus = "Размера файла robots.txt составляет " . $this->robotFSize . " байт, что превышает допустимую норму";
+} else{
+$this->robotFSizeCountStatus = "Размера файла robots.txt составляет " . $this->robotFSize . " байт, что находится в пределах допустимой нормы";
+}//else
+}//func
 
 
 
