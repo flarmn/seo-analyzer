@@ -189,8 +189,36 @@ $this->status[] = 0;
 
 function seo_report_builder(){
 
-	
+	//read data file
 
+$f = fopen("data.txt", "r");
+
+	// Читать построчно до конца файла
+	while (!feof($f)) { 
+
+	// Создать массив с запятой-разделителем
+		for ($z = 0; $z<count($this->testresults); $z++){
+	   $this->errormessages[$z] = explode("/",fgets($f)); 
+}
+	// Записать ссылки (получить данные из массива)
+	   //echo  $this->errormessages[0] ; 
+	  
+
+	}
+	// Записать ссылки (получить данные из массива)
+	   //echo  $this->errormessages[0] ; 
+
+//	echo $z;
+//echo $this->errormessages[$z];
+//print_r($this->errormessages);
+
+echo $this->errormessages[0][1];
+
+
+	fclose($f);
+
+
+// table output
 echo '
 
 <table class="table table-bordered">
@@ -207,7 +235,7 @@ echo '
 	<th>
 	Статус
 	</th>
-	<th>
+	<th style = "width: 45%">
 	Текущее состояние
 	</th>
 </tr>
@@ -232,8 +260,18 @@ echo '<p style = "display:inline-block; background:red; color:white;">Ошибк
 }
 echo '</th>';
 
-echo '<th>';
 
+echo '<th>';
+if ($this->status[$i] == 1){
+echo 'Состояние: ' . $this->errormessages[$i][0] . "<br/>"; 
+echo '<hr>';
+echo 'Рекомендации: ' . $this->errormessages[$i][1] . "<br/>";
+}
+else{
+echo 'Состояние: ' . $this->errormessages[$i][2] . "<br/>"; 
+echo '<hr>';
+echo 'Рекомендации: ' . $this->errormessages[$i][3] . "<br/>";
+}
 echo '</th>';
 
 echo '</tr>';
