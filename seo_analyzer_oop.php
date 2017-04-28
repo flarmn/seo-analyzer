@@ -38,12 +38,19 @@ $this->get_robots_size();
 $this->if_host_exist();
 $this->if_sitemap_exist();
 $this->host_in_robots_count();
+
+//report output
+$this->seo_report_builder();
+echo $this->testresults[0];
+
 }
 
 
 
 
 function if_robots_exist(){
+$this->testresults[] = "Проверка наличия файла robots.txt" ;
+
 $this->robotspath = fopen($this->checkedAddress . '/robots.txt', 'r');
 // Checking if file exist at place
 if ($this->robotspath == false){
@@ -55,6 +62,8 @@ echo 'No robots file';
 
 
 function server_answer(){
+
+
 	// Getting server answer
 $this->serverAnswer=(get_headers($this->checkedAddress)[0]);
 
@@ -94,6 +103,8 @@ $this->robotFSizeCountStatus = "Размера файла robots.txt соста�
 
 function if_host_exist(){
 	// Checking if Host appear in robots file
+
+$this->testresults[] = "Проверка указания директивы Host" ;	
 $this->searchHostTerm  = "Host";
 $this->robotssearch = file_get_contents($this->checkedAddress . '/robots.txt');
 $this->termsCount = substr_count($this->robotssearch, $this->searchHostTerm);
@@ -142,41 +153,15 @@ echo $this->hostCountExistStatus;
 
 
 
-function seo_reporter(){
+function seo_report_builder(){
 
-}
+	for ($i = 0; $i<count($this->testresults); $i++){
+		//echo $i;
+		echo '<br/>';
+		echo $this->testresults[$i];
+	}
 
-
-
-
-
-
-
-function seo_error_messages(){
-
-}
-
-}
-
-
-
-
-$seotester = new seo_tester();
-
-$seotester->seo_tester_init();
-
-
-
-
-
-
-//END 
-?>
-
-
-
-<h1 class = "text-center">Результаты анализа сайта:</h1>
-<h3 class = "text-center"><?php echo $checkedAddress; ?></h3>
+echo '
 
 <table class="table table-bordered">
 
@@ -198,6 +183,8 @@ $seotester->seo_tester_init();
 </tr>
 </thead>
 
+';
+/*
 <tbody>
 <tr>
 	<th>
@@ -311,8 +298,46 @@ $seotester->seo_tester_init();
 
 
 </tbody>
+*/
 
+echo '
 </table>
+';
+
+}
+
+
+
+
+
+
+
+function seo_error_messages(){
+
+}//func
+
+}//class
+
+
+
+
+$seotester = new seo_tester();
+
+$seotester->seo_tester_init();
+
+
+
+
+
+
+//END 
+?>
+
+
+
+<h1 class = "text-center">Результаты анализа сайта:</h1>
+<h3 class = "text-center"><?php echo $checkedAddress; ?></h3>
+
 
 
 
