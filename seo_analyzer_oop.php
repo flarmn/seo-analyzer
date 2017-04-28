@@ -37,6 +37,7 @@ $this->server_answer();
 $this->get_robots_size();
 $this->if_host_exist();
 $this->if_sitemap_exist();
+$this->host_in_robots_count();
 }
 
 
@@ -123,7 +124,20 @@ else{
 
 
 
-
+function host_in_robots_count(){
+	// Checking if Host appear more then once in robots files, and how much times
+echo 'kuku';
+if ($this->termsCount == 1){
+	$this->hostCountExistStatus = "В файле прописана " . $this->termsCount . " директива Host";
+} 
+else if ($this->termsCount > 1){
+$this->hostCountExistStatus = "В файле прописано " . $this->termsCount . " директив Host ";
+} 
+else {
+	$this->hostCountExistStatus = "В файле прописано " . $this->termsCount . " директив Host ";
+}
+echo $this->hostCountExistStatus;
+}
 
 
 
