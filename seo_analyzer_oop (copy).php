@@ -58,8 +58,10 @@ $this->testresults[] = "Проверка наличия файла robots.txt" ;
 $this->robotspath = fopen($this->checkedAddress . '/robots.txt', 'r');
 // Checking if file exist at place
 if ($this->robotspath == false){
+echo 'No robots file';
 $this->status[] = 0;
 } else {
+	echo 'Robots file exist. All ok!';
 	$this->status[] = 1;
 }//else
 }//func
@@ -74,9 +76,11 @@ $this->robotssearch = file_get_contents($this->checkedAddress . '/robots.txt');
 $this->termsCount = substr_count($this->robotssearch, $this->searchHostTerm);
 
 if (substr_count($this->robotssearch, $this->searchHostTerm)>0){
+    echo "<br/>Найден! Искомое слово встречаеться " . $this->termsCount . ' раз';
     $this->status[] = 1;
 }
 else{
+    echo "<br/> хост Не найден!";
     $this->status[] = 0;
 } 
 }
@@ -85,16 +89,20 @@ else{
 function host_in_robots_count(){
 $this->testresults[] = "Проверка количества директив Host, прописанных в файле";
 	// Checking if Host appear more then once in robots files, and how much times
+echo 'kuku';
 if ($this->termsCount == 1){
+	$this->hostCountExistStatus = "В файле прописана " . $this->termsCount . " директива Host";
 	$this->status[] = 1;
 } 
 else if ($this->termsCount > 1){
+$this->hostCountExistStatus = "В файле прописано " . $this->termsCount . " директив Host ";
 $this->status[] = 0;
 } 
 else {
+	$this->hostCountExistStatus = "В файле прописано " . $this->termsCount . " директив Host ";
 	$this->status[] = 0;
 }
-
+//echo $this->hostCountExistStatus;
 }
 
 
@@ -103,9 +111,13 @@ function if_sitemap_exist(){
 	$this->testresults[] = "Проверка указания директивы Sitemap" ;
 	$this->searchSiteMapTerm = "Sitemap";
 if (substr_count($this->robotssearch, $this->searchHostTerm)>0){
+    $this->siteMapExistStatus = "Директива Sitemap указана";
+	echo $this->siteMapExistStatus;
 	$this->status[] = 1;
 }
 else{
+    $this->siteMapExistStatus = "В файле robots.txt не указана директива Sitemap";
+	echo $this->siteMapExistStatus;
 	$this->status[] = 0;
 }
 }
@@ -122,12 +134,15 @@ for ($i = 0; $i < count($this->remoteFileMeta); $i++){
 
 if(substr_count($this->remoteFileMeta[$i], 'Content-Length')>0){
 $this->robotFSize = explode(':', $this->remoteFileMeta[$i])[1];
+echo '<br/> File size: ' . $this->robotFSize . ' Bytes';
 }//if
 }//for 
 
 if ($this->robotFSize > 32000){
+  $this->robotFSizeCountStatus = "Размера файла robots.txt составляет " . $this->robotFSize . " байт, что превышает допустимую норму";
   $this->status[] = 0;
 } else{
+$this->robotFSizeCountStatus = "Размера файла robots.txt составляет " . $this->robotFSize . " байт, что находится в пределах допустимой нормы";
 $this->status[] = 1;
 }//else
 }//func
@@ -143,11 +158,30 @@ function server_answer(){
 $this->serverAnswer=(get_headers($this->checkedAddress)[0]);
 
 if(substr_count($this->serverAnswer, "200")>0){
+echo "Файл robots.txt отдаёт код ответа сервера: " . $this->serverAnswer;
 $this->status[] = 1;
+
 } else {
+echo "При обращении к файлу robots.txt сервер возвращает код ответа: " . $this->serverAnswer;
 $this->status[] = 0;
 }
+
+//echo '<br/>' . 'Server answer: ' . $this->serverAnswer ;
 }//func
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -155,14 +189,38 @@ $this->status[] = 0;
 
 function seo_report_builder(){
 
+	//read data file
+
+$f = fopen("data.txt", "r");
+
+	// Читать построчно до конца файла
+	while (!feof($f)) { 
+
+	// Создать массив с запятой-разделителем
+		for ($z = 0; $z<count($this->testresults); $z++){
+	   $this->errormessages[$z] = explode("/",fgets($f)); 
+}
+	// Записать ссылки (получить данные из массива)
+	   //echo  $this->errormessages[0] ; 
+	  
+
+	}
+	// Записать ссылки (получить данные из массива)
+	   //echo  $this->errormessages[0] ; 
+
+//	echo $z;
+//echo $this->errormessages[$z];
+//print_r($this->errormessages);
+
+echo $this->errormessages[0][1];
+
+
+	fclose($f);
+
 
 // table output
 echo '
-<h1 class = "text-center">Результаты анализа сайта:</h1>
-<h3 class = "text-center">'; 
-echo $this->checkedAddress;
-echo '</h3>';
-echo '
+
 <table class="table table-bordered">
 
 <thead>
@@ -204,75 +262,16 @@ echo '</th>';
 
 
 echo '<th>';
-
-
-if($this->testresults[$i] == "Проверка наличия файла robots.txt" && $this->status[$i] == 1){
-echo 'Состояние: ' . 'Файл robots.txt присутствует' . "<br/>";
+if ($this->status[$i] == 1){
+echo 'Состояние: ' . $this->errormessages[$i][0] . "<br/>"; 
 echo '<hr>';
-echo 'Рекомендации: ' . 'Доработки не требуются' . "<br/>";
+echo 'Рекомендации: ' . $this->errormessages[$i][1] . "<br/>";
 }
-
-if($this->testresults[$i] == "Проверка наличия файла robots.txt" && $this->status[$i] == 0){
-echo 'Состояние: ' . 'Файл robots.txt отсутствует' . "<br/>";
+else{
+echo 'Состояние: ' . $this->errormessages[$i][2] . "<br/>"; 
 echo '<hr>';
-echo 'Рекомендации: ' . 'Программист: Создать файл robots.txt и разместить его на сайте.' . "<br/>";
+echo 'Рекомендации: ' . $this->errormessages[$i][3] . "<br/>";
 }
-
-
-
-if($this->testresults[$i] == "Проверка указания директивы Host" && $this->status[$i] == 1){
-echo 'Состояние: ' . 'Директива Host указана' . "<br/>";
-echo '<hr>';
-echo 'Рекомендации: ' . 'Доработки не требуются' . "<br/>";
-}
-
-if($this->testresults[$i] == "Проверка указания директивы Host" && $this->status[$i] == 0){
-echo 'Состояние: ' . 'В файле robots.txt не указана директива Host' . "<br/>";
-echo '<hr>';
-echo 'Рекомендации: ' . 'Программист: Для того, чтобы поисковые системы знали, какая версия сайта является основных зеркалом, необходимо прописать адрес основного зеркала в директиве Host. В данный момент это не прописано. Необходимо добавить в файл robots.txt директиву Host. Директива Host задётся в файле 1 раз, после всех правил.' . "<br/>";
-}
-
-
-
-if($this->testresults[$i] == "Проверка количества директив Host, прописанных в файле" && $this->status[$i] == 1){
-echo "karyamba";
-}
-
-if($this->testresults[$i] == "Проверка количества директив Host, прописанных в файле" && $this->status[$i] == 0){
-echo "mumu";
-}
-
-
-
-if($this->testresults[$i] == "Проверка указания директивы Sitemap" && $this->status[$i] == 1){
-echo "karyamba";
-}
-
-if($this->testresults[$i] == "Проверка указания директивы Sitemap" && $this->status[$i] == 0){
-echo "mumu";
-}
-
-
-
-if($this->testresults[$i] == "Проверка размера файла robots.txt" && $this->status[$i] == 1){
-echo "karyamba";
-}
-
-if($this->testresults[$i] == "Проверка размера файла robots.txt" && $this->status[$i] == 0){
-echo "mumu";
-}
-
-
-
-if($this->testresults[$i] == "Проверка кода ответа сервера для файла robots.txt" && $this->status[$i] == 1){
-echo "karyamba";
-}
-
-if($this->testresults[$i] == "Проверка кода ответа сервера для файла robots.txt" && $this->status[$i] == 0){
-echo "mumu";
-}
-
-
 echo '</th>';
 
 echo '</tr>';
@@ -285,6 +284,15 @@ echo '
 
 }
 
+
+
+
+
+
+
+function seo_error_messages(){
+
+}//func
 
 }//class
 
@@ -302,6 +310,13 @@ $seotester->seo_tester_init();
 
 //END 
 ?>
+
+
+
+<h1 class = "text-center">Результаты анализа сайта:</h1>
+<h3 class = "text-center"><?php echo $checkedAddress; ?></h3>
+
+
 
 
 </div>
