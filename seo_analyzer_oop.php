@@ -36,6 +36,7 @@ $this->if_robots_exist();
 $this->server_answer();
 $this->get_robots_size();
 $this->if_host_exist();
+$this->if_sitemap_exist();
 }
 
 
@@ -105,6 +106,18 @@ else{
 }
 
 
+
+function if_sitemap_exist(){
+	$this->searchSiteMapTerm = "Sitemap";
+if (substr_count($this->robotssearch, $this->searchHostTerm)>0){
+    $this->siteMapExistStatus = "Директива Sitemap указана";
+	echo $this->siteMapExistStatus;
+}
+else{
+    $this->siteMapExistStatus = "В файле robots.txt не указана директива Sitemap";
+	echo $this->siteMapExistStatus;
+}
+}
 
 
 
