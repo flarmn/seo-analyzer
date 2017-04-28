@@ -33,15 +33,19 @@ $this->checkedAddress = $_POST["address"];
 
 //tests run
 $this->if_robots_exist();
-$this->server_answer();
-$this->get_robots_size();
 $this->if_host_exist();
-$this->if_sitemap_exist();
 $this->host_in_robots_count();
+$this->if_sitemap_exist();
+$this->get_robots_size();
+$this->server_answer();
+
+
+
+
 
 //report output
 $this->seo_report_builder();
-echo $this->testresults[0];
+
 
 }
 
@@ -55,32 +59,73 @@ $this->robotspath = fopen($this->checkedAddress . '/robots.txt', 'r');
 // Checking if file exist at place
 if ($this->robotspath == false){
 echo 'No robots file';
+$this->status[] = 0;
 } else {
 	echo 'Robots file exist. All ok!';
+	$this->status[] = 1;
 }//else
 }//func
 
 
-function server_answer(){
 
+function if_host_exist(){
+// Checking if Host appear in robots file
+$this->testresults[] = "Проверка указания директивы Host" ;	
+$this->searchHostTerm  = "Host";
+$this->robotssearch = file_get_contents($this->checkedAddress . '/robots.txt');
+$this->termsCount = substr_count($this->robotssearch, $this->searchHostTerm);
 
-	// Getting server answer
-$this->serverAnswer=(get_headers($this->checkedAddress)[0]);
-
-if(substr_count($this->serverAnswer, "200")>0){
-echo "Файл robots.txt отдаёт код ответа сервера: " . $this->serverAnswer;
-
-} else {
-echo "При обращении к файлу robots.txt сервер возвращает код ответа: " . $this->serverAnswer;
-
+if (substr_count($this->robotssearch, $this->searchHostTerm)>0){
+    echo "<br/>Найден! Искомое слово встречаеться " . $this->termsCount . ' раз';
+    $this->status[] = 1;
+}
+else{
+    echo "<br/> хост Не найден!";
+    $this->status[] = 0;
+} 
 }
 
-echo '<br/>' . 'Server answer: ' . $this->serverAnswer ;
-}//func
+
+function host_in_robots_count(){
+$this->testresults[] = "Проверка количества директив Host, прописанных в файле";
+	// Checking if Host appear more then once in robots files, and how much times
+echo 'kuku';
+if ($this->termsCount == 1){
+	$this->hostCountExistStatus = "В файле прописана " . $this->termsCount . " директива Host";
+	$this->status[] = 1;
+} 
+else if ($this->termsCount > 1){
+$this->hostCountExistStatus = "В файле прописано " . $this->termsCount . " директив Host ";
+$this->status[] = 0;
+} 
+else {
+	$this->hostCountExistStatus = "В файле прописано " . $this->termsCount . " директив Host ";
+	$this->status[] = 0;
+}
+//echo $this->hostCountExistStatus;
+}
+
+
+
+function if_sitemap_exist(){
+	$this->testresults[] = "Проверка указания директивы Sitemap" ;
+	$this->searchSiteMapTerm = "Sitemap";
+if (substr_count($this->robotssearch, $this->searchHostTerm)>0){
+    $this->siteMapExistStatus = "Директива Sitemap указана";
+	echo $this->siteMapExistStatus;
+	$this->status[] = 1;
+}
+else{
+    $this->siteMapExistStatus = "В файле robots.txt не указана директива Sitemap";
+	echo $this->siteMapExistStatus;
+	$this->status[] = 0;
+}
+}
 
 
 
 function get_robots_size(){
+	$this->testresults[] = "Проверка размера файла robots.txt" ;
 // GETTING REMOTE FILE SIZE FROM REMOTE file METADATA
 
 $this->remoteFileMeta =  (stream_get_meta_data($this->robotspath)['wrapper_data']);
@@ -95,71 +140,56 @@ echo '<br/> File size: ' . $this->robotFSize . ' Bytes';
 
 if ($this->robotFSize > 32000){
   $this->robotFSizeCountStatus = "Размера файла robots.txt составляет " . $this->robotFSize . " байт, что превышает допустимую норму";
+  $this->status[] = 0;
 } else{
 $this->robotFSizeCountStatus = "Размера файла robots.txt составляет " . $this->robotFSize . " байт, что находится в пределах допустимой нормы";
+$this->status[] = 1;
 }//else
 }//func
 
 
-function if_host_exist(){
-	// Checking if Host appear in robots file
-
-$this->testresults[] = "Проверка указания директивы Host" ;	
-$this->searchHostTerm  = "Host";
-$this->robotssearch = file_get_contents($this->checkedAddress . '/robots.txt');
-$this->termsCount = substr_count($this->robotssearch, $this->searchHostTerm);
-
-if (substr_count($this->robotssearch, $this->searchHostTerm)>0){
-    echo "<br/>Найден! Искомое слово встречаеться " . $this->termsCount . ' раз';
-}
-else{
-    echo "<br/> хост Не найден!";
-} 
-}
 
 
 
-function if_sitemap_exist(){
-	$this->searchSiteMapTerm = "Sitemap";
-if (substr_count($this->robotssearch, $this->searchHostTerm)>0){
-    $this->siteMapExistStatus = "Директива Sitemap указана";
-	echo $this->siteMapExistStatus;
-}
-else{
-    $this->siteMapExistStatus = "В файле robots.txt не указана директива Sitemap";
-	echo $this->siteMapExistStatus;
-}
+
+function server_answer(){
+	$this->testresults[] = "Проверка кода ответа сервера для файла robots.txt" ;
+	// Getting server answer
+$this->serverAnswer=(get_headers($this->checkedAddress)[0]);
+
+if(substr_count($this->serverAnswer, "200")>0){
+echo "Файл robots.txt отдаёт код ответа сервера: " . $this->serverAnswer;
+$this->status[] = 1;
+
+} else {
+echo "При обращении к файлу robots.txt сервер возвращает код ответа: " . $this->serverAnswer;
+$this->status[] = 0;
 }
 
+//echo '<br/>' . 'Server answer: ' . $this->serverAnswer ;
+}//func
 
 
 
 
-function host_in_robots_count(){
-	// Checking if Host appear more then once in robots files, and how much times
-echo 'kuku';
-if ($this->termsCount == 1){
-	$this->hostCountExistStatus = "В файле прописана " . $this->termsCount . " директива Host";
-} 
-else if ($this->termsCount > 1){
-$this->hostCountExistStatus = "В файле прописано " . $this->termsCount . " директив Host ";
-} 
-else {
-	$this->hostCountExistStatus = "В файле прописано " . $this->termsCount . " директив Host ";
-}
-echo $this->hostCountExistStatus;
-}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 function seo_report_builder(){
 
-	for ($i = 0; $i<count($this->testresults); $i++){
-		//echo $i;
-		echo '<br/>';
-		echo $this->testresults[$i];
-	}
+	
 
 echo '
 
@@ -184,123 +214,33 @@ echo '
 </thead>
 
 ';
-/*
-<tbody>
-<tr>
-	<th>
-	№
-	</th>
-	<th>
-	Проверка наличия файла robots.txt
-	</th>
-	<th>
-	<?php echo $robotsStatus; ?>
-	</th>
-	<th>
-	<?php echo 'Состояние: ' . $robotsExistStatus . "<br/>"; ?>
-	<hr>
-	<?php echo 'Рекомендации: ' . $robotsExistRecomendation . "<br/>"; ?>
-	</th>
-</tr>
-
-<tr >
-	<th>
-	№325
-	</th>
-	<th>
-	Проверка указания директивы Host
-	</th>
-	<th>
-	<?php echo $hostStatus; ?>
-	</th>
-	<th style = "width: 45%">
-	<?php echo 'Состояние: ' . $hostExistStatus . "<br/>"; ?>
-	<hr>
-	<?php echo 'Рекомендации: ' . $hostExistRecomendation . "<br/>"; ?>
-	</th>
-</tr>
 
 
-<tr>
-	<th>
-	№
-	</th>
-	<th>
-	Проверка количества директив Host, прописанных в файле
-	</th>
-	<th>
-	<?php echo $hostCountStatus; ?>
-	</th>
-	<th>
-	<?php echo 'Состояние: ' . $hostCountExistStatus . "<br/>"; ?>
-	<hr>
-	<?php echo 'Рекомендации: ' . $hostCountRecomendation . "<br/>"; ?>
-	</th>
-</tr>
+echo '<tbody>';
 
+for ($i = 0; $i<count($this->testresults); $i++){
+$this->testnumber = $i +1;
+echo '<tr>';
+echo '<th>' . $this->testnumber . '</th>';
+echo '<th>' . $this->testresults[$i] . '</th>';
+echo '<th>';
+if ($this->status[$i] == 1){
+echo '<p style = "display:inline-block; height:100%; width:100%; background:green; color:white;">OK</p>';
+}
+else{
+echo '<p style = "display:inline-block; background:red; color:white;">Ошибка</p>';
+}
+echo '</th>';
 
-<tr>
-	<th>
-	№
-	</th>
-	<th>
-	Проверка указания директивы Sitemap
-	</th>
-	<th>
-	<?php echo $siteMapStatus; ?>
-	</th>
-	<th>
-		<?php echo 'Состояние: ' . $siteMapExistStatus . "<br/>"; ?>
-	<hr>
-	<?php echo 'Рекомендации: ' . $siteMapExistRecomendation . "<br/>"; ?>
-	</th>
-</tr>
+echo '<th>';
 
+echo '</th>';
 
-
-<tr>
-	<th>
-	№
-	</th>
-	<th>
-	Проверка размера файла robots.txt
-	</th>
-	<th>
-	<?php echo $robotFSizeStatus; ?>
-	</th>
-	<th>
-		<?php echo 'Состояние: ' . $robotFSizeCountStatus . "<br/>"; ?>
-	<hr>
-	<?php echo 'Рекомендации: ' . $robotFSizeRecomendation . "<br/>"; ?>
-	</th>
-</tr>
-
-
-
-
-<tr>
-	<th>
-	№
-	</th>
-	<th>
-	Проверка кода ответа сервера для файла robots.txt
-	</th>
-	<th>
-	<?php echo $serverAnswerStatus; ?>
-	</th>
-	<th>
-		<?php echo 'Состояние: ' . $serverAnswerCountStatus . "<br/>"; ?>
-	<hr>
-	<?php echo 'Рекомендации: ' . $serverAnswerRecomendation . "<br/>"; ?>
-	</th>
-</tr>
-
-
-
-</tbody>
-*/
+echo '</tr>';
+}
 
 echo '
+</tbody>
 </table>
 ';
 
