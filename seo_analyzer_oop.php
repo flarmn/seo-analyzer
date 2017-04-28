@@ -35,6 +35,7 @@ $this->checkedAddress = $_POST["address"];
 $this->if_robots_exist();
 $this->server_answer();
 $this->get_robots_size();
+$this->if_host_exist();
 }
 
 
@@ -79,7 +80,6 @@ if(substr_count($this->remoteFileMeta[$i], 'Content-Length')>0){
 $this->robotFSize = explode(':', $this->remoteFileMeta[$i])[1];
 echo '<br/> File size: ' . $this->robotFSize . ' Bytes';
 }//if
-
 }//for 
 
 if ($this->robotFSize > 32000){
@@ -88,6 +88,28 @@ if ($this->robotFSize > 32000){
 $this->robotFSizeCountStatus = "Размера файла robots.txt составляет " . $this->robotFSize . " байт, что находится в пределах допустимой нормы";
 }//else
 }//func
+
+
+function if_host_exist(){
+	// Checking if Host appear in robots file
+$this->searchHostTerm  = "Host";
+$this->robotssearch = file_get_contents($this->checkedAddress . '/robots.txt');
+$this->termsCount = substr_count($this->robotssearch, $this->searchHostTerm);
+
+if (substr_count($this->robotssearch, $this->searchHostTerm)>0){
+    echo "<br/>Найден! Искомое слово встречаеться " . $this->termsCount . ' раз';
+}
+else{
+    echo "<br/> хост Не найден!";
+} 
+}
+
+
+
+
+
+
+
 
 
 
