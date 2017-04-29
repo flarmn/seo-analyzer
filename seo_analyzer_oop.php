@@ -40,14 +40,8 @@ $this->if_sitemap_exist();
 $this->get_robots_size();
 $this->server_answer();
 
-
-
-
-
 //report output
 $this->seo_report_builder();
-
-
 }
 
 
@@ -95,7 +89,6 @@ $this->status[] = 2;
 else {
 	$this->status[] = 0;
 }
-
 }
 
 
@@ -155,8 +148,6 @@ $this->status[] = 0;
 
 
 function seo_report_builder(){
-
-
 // table output
 echo '
 <h1 class = "text-center">Результаты анализа сайта:</h1>
@@ -201,8 +192,6 @@ else{
 echo '<p style = "display:inline-block; background:red; color:white;">Ошибка</p>';
 }
 echo '</th>';
-
-
 echo '<th>';
 
 
@@ -303,18 +292,11 @@ echo '
 </tbody>
 </table>
 ';
-
 }
 }//class
 
-
-
-
 $seotester = new seo_tester();
-
 $seotester->seo_tester_init();
-
-
 //END 
 ?>
 
